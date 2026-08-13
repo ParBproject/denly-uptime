@@ -26,7 +26,7 @@ jobs:
         env:
           HEALTH_URL: https://denlyai.com/api/healthz
         run: |
-          body="$({ curl --fail --silent --show-error \
+          body="$({ curl --ipv4 --fail --silent --show-error \
             --max-time 20 \
             --retry 2 \
             --retry-delay 10 \
