@@ -1,0 +1,41 @@
+name: External uptime
+
+on:
+  schedule:
+    # GitHub's shortest supported schedule is five minutes. This probe runs on
+    # GitHub infrastructure, so it still fails and alerts when the host PC,
+    # local network, tunnel, or Docker stack is completely unavailable.
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: external-uptime
+  cancel-in-progress: true
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Check public API health
+        env:
+          HEALTH_URL: https://denlyai.com/api/healthz
+        run: |
+          body="$({ curl --fail --silent --show-error \
+            --max-time 20 \
+            --retry 2 \
+            --retry-delay 10 \
+            --retry-all-errors \
+            "$HEALTH_URL"; } 2>&1)" || {
+              echo "External health probe failed: $body" >&2
+              exit 1
+            }
+          status="$(jq -r '.status // empty' <<<"$body")"
+          if [[ "$status" != "ok" ]]; then
+            echo "Health endpoint did not return status=ok: $body" >&2
+            exit 1
+          fi
+          echo "Denly is reachable and its database/rate-limit dependencies are healthy."
