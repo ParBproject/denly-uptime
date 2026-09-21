@@ -1,5 +1,9 @@
 # Denly External Uptime Monitor
 
+## For a data analyst application
+
+**Do not use this as a data analyst sample.** It is an external uptime probe. There is no dashboard and no analysis dataset here.
+
 [![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-Uptime_Probe-2088FF?logo=githubactions&logoColor=white)](.github/workflows/external-uptime.yml)
 [![Schedule](https://img.shields.io/badge/Schedule-Every_5_Minutes-2ea44f)](.github/workflows/external-uptime.yml)
 
